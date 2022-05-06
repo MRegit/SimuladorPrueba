@@ -16,26 +16,18 @@ public class BasicMovement : MonoBehaviour {
 	private float minRotationDowmY = 15.0f;
     private Vector3 positionActual;
     private GameObject esfera;
-    [SerializeField] float speed = 1;
     private float zoomActual;
-    Rigidbody m_Rigidbody;
 
     void Start() {
-        m_Rigidbody = GetComponent<Rigidbody>();
         camera = GetComponentInChildren<Camera>();
         esfera = GameObject.Find("Sphere");
-        zoomActual=2;
     }
 
     
     void Update() {
-        m_Rigidbody.MovePosition( transform.forward * speed * Time.deltaTime );
-        //positionActual =  m_Rigidbody.position;
-
-        Debug.Log(m_Rigidbody.position);
-        Debug.Log(positionActual);
-        Debug.Log( Time.deltaTime);
-
+        //Vector3 velocity = transform.right *1;
+        //transform.position += velocity * Time.deltaTime;
+        positionActual=transform.position;
         if (Input.GetAxis("Vertical") == 1){InclinarArriba();}
 		if (Input.GetAxis("Vertical") == -1) {InclinarAbajo();}
 
@@ -67,43 +59,22 @@ public class BasicMovement : MonoBehaviour {
 				//Debug.Log(rotationY);
 			}
 		}
-/**
-    private void Zoom1(){
-		esfera.transform.position = new Vector3(positionActual.x,positionActual.y+ (1*devolverAltura(positionActual.z)),positionActual.z+1);
-        Debug.Log(esfera.transform.position);
-        zoomActual=1;
-	}
 
-	private void Zoom2(){
-        esfera.transform.position = new Vector3(positionActual.x,positionActual.y+ (1*devolverAltura(positionActual.z)),positionActual.z+1);
-        Debug.Log(esfera.transform.position);
-        zoomActual=3;
-	}
-
-	private void Zoom3(){
-        m_Rigidbody.position = positionActual * 10;
-        Debug.Log(m_Rigidbody.position);
-        zoomActual=10;
-
-	}
-    private void regresarZoom(){
-         esfera.transform.position = new Vector3(positionActual.x,positionActual.y- (zoomActual*devolverAltura(positionActual.z)),positionActual.z-zoomActual);
-    }
-**/
     private void Zoom(int zoom){
         regresarZoom();
-		m_Rigidbody.MovePosition( transform.forward * zoom );
-        zoomActual=zoom;
+        if(zoom==1){
+            esfera.transform.position=positionActual;
+        }else{
+            esfera.transform.position=positionActual+(camera.transform.forward*zoom)+ new Vector3(0,0.01f*rotationY,0);
+        }
+		zoomActual=zoom;
 	}
 
     private void regresarZoom(){
-        m_Rigidbody.MovePosition( transform.forward / zoomActual );
+        if(zoomActual==1){
+            esfera.transform.position=positionActual;
+        }else{
+            esfera.transform.position=positionActual- (camera.transform.forward*zoomActual)-new Vector3(0,0.01f*rotationY,0);
+        }
     }
-/**
-    private float devolverAltura(float z){
-        float y= z*Mathf.Tan(rotationY);
-        return y;
-    }
-    
-**/
 }
